@@ -6,7 +6,7 @@ import numpy as np
 from gemini_api import get_extracted_details  # Importing the function from gemini_api.py
 
 # Set the path to the Tesseract executable
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Update this path as per your installation
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Update this path as per your installation
 
 # Streamlit app title
 st.title("🖼️ OCR with Tesseract and Streamlit")

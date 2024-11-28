@@ -1,35 +1,27 @@
-import requests
+import google.generativeai as genai
+import os 
 
-def get_extracted_details(text, prompt):
-    """
-    Sends the extracted text and user prompt to the Gemini API to get the extracted details.
 
-    :param text: The extracted text from the OCR process.
-    :param prompt: The prompt entered by the user to extract specific details.
-    :return: The extracted details or an error message.
-    """
-    # Use the actual Gemini API URL instead of the placeholder
-    api_url = "https://api.gemini.com/extract"  # Replace with the correct Gemini API URL
+sys_prompt = """You are provided with the following extracted text content from an image:
+{TEXT}
+Answer the users question strictly based on the content of this text.
+Extract specific details or provide relevant information only from the text provided.
+Do not include external information or unrelated details in your response.
+{USER_QUESTION}
+"""
 
-    # Add API key in the params
-    params = {
-        'key': 'AIzaSyBwPmE8nCWi9sw_WopPA6RYHVLoWmnj_Lk'  # Replace with your actual API key
-    }
 
-    payload = {
-        "text": text,
-        "prompt": prompt
-    }
 
-    try:
-        # Make the POST request with API key as a query parameter
-        response = requests.post(api_url, params=params, json=payload)
+def get_extracted_details(text, usr_prompt):
+   
+    api_key = os.getenv("GEMINI_API_KEY")
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
 
-        # Check if the response was successful
-        if response.status_code == 200:
-            return response.json().get('extracted_details', 'No details extracted')
-        else:
-            return f"API call failed with status code: {response.status_code}"
+    final_prompt = sys_prompt.format(TEXT=text,USER_QUESTION=usr_prompt)
 
+    try: 
+        response = model.generate_content(final_prompt)
+        return response.text
     except Exception as e:
-        return f"Error during API call: {str(e)}"
+        return e
